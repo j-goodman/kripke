@@ -3,74 +3,46 @@ import sys
 # TERMINAL COMMAND: python kripke.py poe.txt
 
 file_name = sys.argv[1]
-with open(file_name) as file:
-    input_string = file.read()
+suffix = False
+try:
+    suffix = file_name.split('_k')[1]
+    if suffix == '.txt':
+        suffix = 'k'
+except:
+    pass
 
-output_string = ''
+if suffix == 'k':
+    # DECODE:
+    with open(file_name) as file:
+        input_string = file.read()
+    output_string = ''
+    x = 0
+    y = 7
+    while y <= len(input_string):
+        chunk = input_string[x:y]
+        output_string+=chr(int(chunk, 2))
+        x+=7
+        y+=7
+    name_length = len(file_name)-6
+    text_file = open(file_name[:name_length]+".txt", "w")
+    text_file.write(output_string)
+    text_file.close()
+else:
+    # ENCODE:
+    with open(file_name) as file:
+        input_string = file.read()
+    output_string = ''
+    for char in input_string:
+        try:
+            charcode = str(bin(ord(char)))
+            charcode = charcode.split('b')[1]
+            while len(charcode) < 7:
+                charcode = '0'+charcode
+            output_string += charcode
+        except:
+            output_string += char
 
-key = {
-    'a': 'q',
-    'b': 'F',
-    'c': 'r',
-    'd': 'G',
-    'e': ' ',
-    'f': 's',
-    'g': 'a',
-    'h': 'U',
-    'i': 't',
-    'j': 'b',
-    'k': 'u',
-    'l': 'H',
-    'm': 'c',
-    'n': 'Z',
-    'o': 'v',
-    'p': 'd',
-    'q': 'V',
-    'r': 'I',
-    's': 'w',
-    't': 'W',
-    'u': 'T',
-    'v': 'x',
-    'w': 'J',
-    'x': 'K',
-    'y': 'f',
-    'z': 'y',
-    'A': 'g',
-    'B': 'h',
-    'C': 'L',
-    'D': 'M',
-    'E': 'i',
-    'F': 'X',
-    'G': 'z',
-    'H': 'j',
-    'I': 'N',
-    'J': 'A',
-    'K': 'k',
-    'L': 'Y',
-    'M': 'B',
-    'N': 'l',
-    'O': 'O',
-    'P': 'P',
-    'Q': 'm',
-    'R': 'C',
-    'S': 'Q',
-    'T': 'n',
-    'U': 'R',
-    'V': 'D',
-    'W': 'o',
-    'X': 'S',
-    'Y': 'E',
-    'Z': 'p',
-    ' ': 'e',
-}
-
-for char in input_string:
-    try:
-        output_string += key[char]
-    except:
-        output_string += char
-
-name_length = len(file_name)-4
-text_file = open(file_name[:name_length]+"_k.txt", "w")
-text_file.write(output_string)
-text_file.close()
+    name_length = len(file_name)-4
+    text_file = open(file_name[:name_length]+"_k.txt", "w")
+    text_file.write(output_string)
+    text_file.close()
